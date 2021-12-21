@@ -2,7 +2,7 @@ const express = require('express');
 const res = require('express/lib/response');
 const app = express();
 
-const personsList = [
+let personsList = [
   {
     id: 1,
     name: 'Arto hellas',
@@ -44,6 +44,14 @@ app.get('/info', (req, res) => {
   `)
 })
 
+/*  Aqui aparece el metodo params que en este caso
+ *  lo utilizamos para obtener el id de la request.
+ *
+ *  Es importante saber que este metodo es conocido
+ *  como un Middleware, es decir una funcion que es
+ *  llamada entre el procesamiento de la request y 
+ *  el envio de la respuesta.
+ */
 app.get('/api/persons/:id', (req, res) => {
   const currentID = Number(req.params.id)
   const contact = personsList.find(person =>
@@ -56,6 +64,23 @@ app.get('/api/persons/:id', (req, res) => {
   } else {
     res.status(404).send('That contact doesn\'t exist')
   }
+})
+
+/*  Luego de obtener el id fultramos con el metodo
+ *  filter el array de contactos devolviendo todos
+ *  miembros excepto aquel que contiene dicho id.
+ *  
+ *  Finalmente actualizamos el valor de la lista de
+ *  contactos.
+ */
+app.delete('/api/persons/:id', (req, res) => {
+  const currentID = Number(req.params.id)
+  const newContacs = personsList.filter(person =>
+    person.id !== currentID
+  )
+  
+  personsList = newContacs
+  res.status(204).end()
 })
 
 const PORT = 3001
