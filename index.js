@@ -62,7 +62,7 @@ app.get('/api/persons/:id', (req, res) => {
     // res.send(`<p>Contact <strong>${contact.name}</strong></p>`)
     res.json(contact) 
   } else {
-    res.status(404).send('That contact doesn\'t exist')
+    res.status(404).send('Not faund')
   }
 })
 
@@ -81,6 +81,29 @@ app.delete('/api/persons/:id', (req, res) => {
   
   personsList = newContacs
   res.status(204).end()
+})
+
+/*  Para alterar los datos en el servidor en nuestro
+ *  caso tenemos que asegurarnos de generar un id 
+ *  para el nuevo recurso.
+ * 
+ *  Luego, con el metodo body podemos acceder al cuerpo
+ *  de la request y asi setear el nuevo contacto en un
+ *  nuevo objeto. Finalente modificamos nuestra lista
+ *  de contactos concatenando con el metodo concat.
+ */
+app.post('/api/persons', (req, res) => {
+  const id = Math.round(Math.random()*1000)
+  const body = req.body
+  const newContac = {
+    id: id,
+    name: body.name || `unnamed ${id}`,
+    phone: body.number
+  }
+  const newList = personsList.concat(newContac)
+
+  personsList = newList
+  res.json(personsList)
 })
 
 const PORT = 3001
