@@ -95,15 +95,31 @@ app.delete('/api/persons/:id', (req, res) => {
 app.post('/api/persons', (req, res) => {
   const id = Math.round(Math.random()*1000)
   const body = req.body
-  const newContac = {
-    id: id,
-    name: body.name || `unnamed ${id}`,
-    phone: body.number
-  }
-  const newList = personsList.concat(newContac)
+  const sameName = personsList.find(person =>
+    person.name === body.name 
+  )
 
-  personsList = newList
-  res.json(personsList)
+  console.log('samename: ', sameName)
+
+  if (sameName) {
+    res.status(400).json({
+      error: 'name must be unique'
+    })
+  } else if (!body.name || !body.number) {
+    res.status(400).json({
+      error: 'name or number missing'
+    })
+  } else {
+    const newContac = {
+      id: id,
+      name: body.name,
+      phone: body.number
+    }
+    const newList = personsList.concat(newContac)
+  
+    personsList = newList
+    res.json(personsList)
+  }
 })
 
 const PORT = 3001
