@@ -3,7 +3,11 @@ const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
-app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :param[name] :param[number]'))
+
+morgan.token('param', (req, res, param) => 
+  res.params[param]
+)
 
 let personsList = [
   {
