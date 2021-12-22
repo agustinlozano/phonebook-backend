@@ -1,6 +1,9 @@
-const express = require('express');
-const res = require('express/lib/response');
-const app = express();
+const express = require('express')
+const morgan = require('morgan')
+const app = express()
+
+app.use(express.json())
+app.use(morgan('tiny'))
 
 let personsList = [
   {
@@ -24,8 +27,6 @@ let personsList = [
     number: '39-23-642344'
   }
 ]
-
-app.use(express.json())
 
 app.get('/', (req, res) => {
   res.send('<h1>Phonebook</h1>')
@@ -98,8 +99,6 @@ app.post('/api/persons', (req, res) => {
   const sameName = personsList.find(person =>
     person.name === body.name 
   )
-
-  console.log('samename: ', sameName)
 
   if (sameName) {
     res.status(400).json({
