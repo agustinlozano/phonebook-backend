@@ -145,6 +145,13 @@ app.post('/api/persons', (req, res) => {
   }
 })
 
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+/* Middleware para capturar los endpoints que no son manejados por la app */
+app.use(unknownEndpoint)
+
 const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
