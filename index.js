@@ -2,6 +2,10 @@ const express = require('express')
 const morgan = require('morgan')
 const app = express()
 
+/*  Configure morgan para que también muestre los 
+ *  datos enviados en las solicitudes HTTP POST:
+ *    - No funciona
+ */
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :param[name] :param[number]'))
 
@@ -9,6 +13,9 @@ morgan.token('param', (req, res, param) =>
   res.params[param]
 )
 
+/* Estos datos serian los que le llegan al servidor
+ * cuando comienza la ejecucion de la aplicacion
+ */
 let personsList = [
   {
     id: 1,
@@ -40,6 +47,7 @@ app.get('/api/persons', (req, res) => {
   res.json(personsList);
 })
 
+/*  Un GET -> /info devuelve un fragmento HTML  */
 app.get('/info', (req, res) => {
   const totalContacts = personsList.length
   const date = new Date()
@@ -57,11 +65,14 @@ app.get('/info', (req, res) => {
  *  llamada entre el procesamiento de la request y 
  *  el envio de la respuesta.
  */
+/* GET -> person */
 app.get('/api/persons/:id', (req, res) => {
   const currentID = Number(req.params.id)
   const contact = personsList.find(person =>
     person.id === currentID
   )
+  
+  console.log('contactID: ', contact)
   
   if (contact) {
     // res.send(`<p>Contact <strong>${contact.name}</strong></p>`)
@@ -71,13 +82,14 @@ app.get('/api/persons/:id', (req, res) => {
   }
 })
 
-/*  Luego de obtener el id fultramos con el metodo
+/*  Luego de obtener el id filtramos con el metodo
  *  filter el array de contactos devolviendo todos
  *  miembros excepto aquel que contiene dicho id.
  *  
  *  Finalmente actualizamos el valor de la lista de
  *  contactos.
  */
+/* DELETE -> person */
 app.delete('/api/persons/:id', (req, res) => {
   const currentID = Number(req.params.id)
   const newContacs = personsList.filter(person =>
@@ -97,13 +109,19 @@ app.delete('/api/persons/:id', (req, res) => {
  *  nuevo objeto. Finalente modificamos nuestra lista
  *  de contactos concatenando con el metodo concat.
  */
+ /* POST -> persons */
 app.post('/api/persons', (req, res) => {
   const id = Math.round(Math.random()*1000)
   const body = req.body
+  
+  console.log('body: ', body)
+  /* body = { id, name, phone } */
+  
   const sameName = personsList.find(person =>
     person.name === body.name 
   )
-
+  
+  /* validaciones */
   if (sameName) {
     res.status(400).json({
       error: 'name must be unique'
@@ -118,6 +136,8 @@ app.post('/api/persons', (req, res) => {
       name: body.name,
       phone: body.number
     }
+    
+    /* Modificar -actualiza- la iformacion en el servidor */
     const newList = personsList.concat(newContac)
   
     personsList = newList
