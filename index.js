@@ -1,41 +1,64 @@
 const express = require('express')
-const morgan = require('morgan')
+// const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
+
+app.use(cors())
 
 /*  Configure morgan para que también muestre los
  *  datos enviados en las solicitudes HTTP POST:
  *    - No funciona
  */
 app.use(express.json())
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :param[name] :param[number]'))
+// app.use(morgan(':method :url :status :res[content-length] - :response-time ms :param[name] :param[number]'))
 
-morgan.token('param', (req, res, param) =>
-  res.params[param]
-)
+// morgan.token('param', (req, res, param) =>
+//   res.params[param]
+// )
 
 /* Estos datos serian los que le llegan al servidor
  * cuando comienza la ejecucion de la aplicacion
  */
 let personsList = [
   {
-    id: 1,
-    name: 'Arto hellas',
-    number: '040-123456'
+    name: 'Arto Hellas',
+    phone: '040-123456',
+    id: 1
   },
   {
-    id: 2,
     name: 'Ada Lovelace',
-    number: '39-44-534323'
+    phone: '39-44-5323523',
+    id: 2
   },
   {
-    id: 3,
     name: 'Dan Abramov',
-    number: '12-43-234563'
+    phone: '12-43-234345',
+    id: 3
   },
   {
-    id: 4,
-    name: 'Mary Poppendick',
-    number: '39-23-642344'
+    name: 'Mary Poppendieck',
+    phone: '39-23-6423122',
+    id: 4
+  },
+  {
+    name: 'Agustin Lozano',
+    phone: '2477-635371',
+    id: 5
+  },
+  {
+    name: 'Celeste Tessone',
+    phone: '2477-397271',
+    id: 6
+  },
+  {
+    name: 'Cato y Bebe',
+    phone: '2477-444740',
+    id: 7
+  },
+  {
+    name: 'Abuelo Martin',
+    phone: '2477-427026',
+    id: 8
   }
 ]
 
@@ -126,7 +149,7 @@ app.post('/api/persons', (req, res) => {
     res.status(400).json({
       error: 'name must be unique'
     })
-  } else if (!body.name || !body.number) {
+  } else if (!body.name || !body.phone) {
     res.status(400).json({
       error: 'name or number missing'
     })
@@ -134,7 +157,7 @@ app.post('/api/persons', (req, res) => {
     const newContac = {
       id: id,
       name: body.name,
-      phone: body.number
+      phone: body.phone
     }
 
     /* Modificar -actualiza- la iformacion en el servidor */
