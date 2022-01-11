@@ -1,9 +1,11 @@
 const express = require('express')
 // const morgan = require('morgan')
+const logger = require('./loggerMiddleware')
 const cors = require('cors')
 const app = express()
 
 app.use(cors())
+app.use(logger)
 
 /*  Configure morgan para que también muestre los
  *  datos enviados en las solicitudes HTTP POST:
