@@ -23,6 +23,10 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "nodemon": "2.0.15"
+    "nodemon": "2.0.15",
+    "standard": "16.0.4"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/standard/eslintrc.json"
   }
 }
