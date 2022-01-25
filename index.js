@@ -13,6 +13,7 @@ const handleErrors = require('./middleware/handleErrors')
 app.use(cors())
 app.use(logger)
 app.use(express.json())
+app.use(express.static('build'))
 
 /**
  *  Configure morgan para que también muestre los
