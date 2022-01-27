@@ -113,8 +113,6 @@ app.put('/api/persons/:id', (req, res, next) => {
   const currentID = req.params.id
   const currentContact = req.body
 
-  console.log(currentID)
-
   const newContactInfo = {
     name: currentContact.name,
     phone: currentContact.phone
@@ -131,7 +129,7 @@ app.use(notFound)
 /* Middleware para capturar el resto de errores */
 app.use(handleErrors)
 
-const PORT = process.env.LOCAL
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
