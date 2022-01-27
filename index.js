@@ -11,9 +11,9 @@ const notFound = require('./middleware/notFound')
 const handleErrors = require('./middleware/handleErrors')
 
 app.use(cors())
-app.use(logger)
-app.use(express.json())
 app.use(express.static('build'))
+app.use(express.json())
+app.use(logger)
 
 /**
  *  Configure morgan para que también muestre los
@@ -88,8 +88,6 @@ app.delete('/api/persons/:id', (req, res, next) => {
 app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
-  console.log(body)
-
   /* validaciones */
   if (!body.name || !body.phone) {
     res.status(400).json({
@@ -111,16 +109,18 @@ app.post('/api/persons', (req, res, next) => {
 })
 
 /* Para actualizar un contacto: NO FUNCIONA */
-app.put('api/notes/:id', (req, res, next) => {
-  const { currentID } = req.params.id
+app.put('/api/persons/:id', (req, res, next) => {
+  const currentID = req.params.id
   const currentContact = req.body
+
+  console.log(currentID)
 
   const newContactInfo = {
     name: currentContact.name,
     phone: currentContact.phone
   }
 
-  Contact.findByIdAndUpdate(currentID, newContactInfo)
+  Contact.findByIdAndUpdate(currentID, newContactInfo, { new: true })
     .then(result => res.json(result))
     .catch(err => next(err))
 })
