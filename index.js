@@ -20,7 +20,7 @@ app.use(express.static('build'))
  *  datos enviados en las solicitudes HTTP POST:
  *    - No funciona
  */
-// app.use(morgan(':method :url :status :res[content-length] - :response-time ms :param[name] :param[number]'))
+// app.use(morgan(':method :url :status :res[content-length] - :response-time ms :param[name] :param[phone]'))
 
 // morgan.token('param', (req, res, param) =>
 //   res.params[param]
@@ -88,15 +88,17 @@ app.delete('/api/persons/:id', (req, res, next) => {
 app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
+  console.log(body)
+
   /* validaciones */
-  if (!body.name || !body.number) {
+  if (!body.name || !body.phone) {
     res.status(400).json({
       error: 'name or number missing'
     })
   } else {
     const newContac = new Contact({
       name: body.name,
-      number: body.number
+      phone: body.phone
     })
 
     /* Modificar -actualiza- la iformacion en la db */
@@ -115,7 +117,7 @@ app.put('api/notes/:id', (req, res, next) => {
 
   const newContactInfo = {
     name: currentContact.name,
-    number: currentContact.number
+    phone: currentContact.phone
   }
 
   Contact.findByIdAndUpdate(currentID, newContactInfo)
