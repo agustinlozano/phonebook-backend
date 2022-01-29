@@ -17,7 +17,6 @@ mongoose.connect(config.MONGO_DB_URI)
   .catch(error => {
     logger.error('error connecting to MongoDB:', error.message)
   })
-
 process.on('uncaughtException', () => mongoose.connection.close())
 
 app.use(cors())
