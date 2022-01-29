@@ -87,28 +87,20 @@ app.delete('/api/persons/:id', (req, res, next) => {
 /* POST -> persons */
 app.post('/api/persons', (req, res, next) => {
   const body = req.body
+  const newContac = new Contact({
+    name: body.name,
+    phone: body.phone
+  })
 
-  /* validaciones */
-  if (!body.name || !body.phone) {
-    res.status(400).json({
-      error: 'name or number missing'
+  /* Modificar -agrega un nuevo contact- la iformacion en la db */
+  newContac.save()
+    .then(savedContact => {
+      res.json(savedContact)
     })
-  } else {
-    const newContac = new Contact({
-      name: body.name,
-      phone: body.phone
-    })
-
-    /* Modificar -actualiza- la iformacion en la db */
-    newContac.save()
-      .then(savedContact => {
-        res.json(savedContact)
-      })
-      .catch(err => next(err))
-  }
+    .catch(err => next(err))
 })
 
-/* Para actualizar un contacto: NO FUNCIONA */
+/* Para actualizar la informacion de un contacto */
 app.put('/api/persons/:id', (req, res, next) => {
   const currentID = req.params.id
   const currentContact = req.body

@@ -1,8 +1,16 @@
 const { model, Schema } = require('mongoose')
 
 const contactSchema = new Schema({
-  name: String,
-  phone: String
+  name: {
+    type: String,
+    minlength: 2,
+    required: true
+  },
+  phone: {
+    type: String,
+    minlength: 8,
+    required: true
+  }
 })
 
 /**
