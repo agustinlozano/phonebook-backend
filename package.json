@@ -6,8 +6,9 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
-    "test": "cross-env NODE_ENV=test jest --verbose",
-    "deploy": "git push heroku master"
+    "test": "cross-env NODE_ENV=test jest --verbose --silent",
+    "deploy": "git push heroku master",
+    "test:watch": "npm run test -- --watch"
   },
   "repository": {
     "type": "git",
@@ -30,7 +31,8 @@
   "devDependencies": {
     "jest": "27.4.7",
     "nodemon": "2.0.15",
-    "standard": "16.0.4"
+    "standard": "16.0.4",
+    "supertest": "6.2.2"
   },
   "eslintConfig": {
     "extends": "./node_modules/standard/eslintrc.json"
