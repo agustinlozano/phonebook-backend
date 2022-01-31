@@ -6,16 +6,6 @@ contactsRouter.get('/', (req, res) => {
     .then(contacts => res.json(contacts))
 })
 
-/**
-*  Aqui aparece el metodo params que en este caso
-*  lo utilizamos para obtener el id de la request.
-*
-*  Es importante saber que este metodo es conocido
-*  como un Middleware, es decir una funcion que es
-*  llamada entre el procesamiento de la request y
-*  el envio de la respuesta.
-*/
-/* GET -> person */
 contactsRouter.get('/api/persons/:id', (req, res, next) => {
   const currentID = req.params.id
 
@@ -28,15 +18,6 @@ contactsRouter.get('/api/persons/:id', (req, res, next) => {
   }).catch(err => { next(err) })
 })
 
-/**
- *  Luego de obtener el id filtramos con el metodo
- *  filter el array de contactos devolviendo todos
- *  miembros excepto aquel que contiene dicho id.
- *
- *  Finalmente actualizamos el valor de la lista de
- *  contactos.
- */
-/* DELETE -> person */
 contactsRouter.delete('/:id', (req, res, next) => {
   const currentID = req.params.id
 
@@ -45,17 +26,6 @@ contactsRouter.delete('/:id', (req, res, next) => {
     .catch(err => next(err))
 })
 
-/**
- *  Para alterar los datos en el servidor en nuestro
- *  caso tenemos que asegurarnos de generar un id
- *  para el nuevo recurso.
- *
- *  Luego, con el metodo body podemos acceder al cuerpo
- *  de la request y asi setear el nuevo contacto en un
- *  nuevo objeto. Finalente modificamos nuestra lista
- *  de contactos concatenando con el metodo concat.
- */
-/* POST -> persons */
 contactsRouter.post('/', (req, res, next) => {
   const body = req.body
   const newContac = new Contact({
