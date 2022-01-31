@@ -35,7 +35,10 @@
     "supertest": "6.2.2"
   },
   "eslintConfig": {
-    "extends": "./node_modules/standard/eslintrc.json"
+    "extends": "./node_modules/standard/eslintrc.json",
+    "env": {
+      "jest": true
+    }
   },
   "jest": {
     "testEnvironment": "node"
