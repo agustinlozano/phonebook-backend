@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-
 const server = require('../index')
 const ContactModel = require('../models/Contact')
 const {
@@ -51,7 +50,6 @@ test('a valid conctact can be added', async () => {
     .expect('Content-Type', /json/)
 
   const { names } = await getAllNamesFromContacts()
-
   expect(names).toContain(newContact.name)
   expect(names).toHaveLength(initialContacts.length + 1)
 })
@@ -68,8 +66,15 @@ test('a invalid contact cannot be added', async () => {
     .expect(400)
 
   const { names } = await getAllNamesFromContacts()
-
   expect(names).toHaveLength(initialContacts.length)
+})
+
+test('a invalid id return 404 status code', async () => {
+  const invalidID = '61f85179ff08013914dd882d'
+
+  await api
+    .get(`/api/persons/${invalidID}`)
+    .expect(404)
 })
 
 afterAll(() => {

@@ -20,8 +20,9 @@ const initialContacts = [
 const getAllNamesFromContacts = async () => {
   const response = await api.get('/api/persons')
   const names = response.body.map(contact => contact.name)
+  const IDs = response.body.map(contact => contact.id)
 
-  return { response, names }
+  return { response, names, IDs }
 }
 
 module.exports = {
