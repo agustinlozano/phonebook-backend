@@ -17,16 +17,15 @@ const initialContacts = [
   }
 ]
 
-const getAllNamesFromContacts = async () => {
+const getAllFromContacts = async () => {
   const response = await api.get('/api/persons')
   const names = response.body.map(contact => contact.name)
-  const IDs = response.body.map(contact => contact.id)
 
-  return { response, names, IDs }
+  return { response, names }
 }
 
 module.exports = {
   api,
   initialContacts,
-  getAllNamesFromContacts
+  getAllFromContacts
 }
