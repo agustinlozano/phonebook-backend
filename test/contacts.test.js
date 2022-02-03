@@ -42,7 +42,19 @@ test('a contact have my name', async () => {
   expect(names).toContain('Agustin Lozano')
 })
 
-test('a valid conctact can be added', async () => {
+test('contact is returned as json', async () => {
+  const { response } = await getAllFromContacts()
+  const contacts = response.body
+  const firstContact = contacts[0]
+
+  console.log(firstContact.id)
+  await api
+    .get(`/api/persons/${firstContact.id}`)
+    .expect(200)
+    .expect('Content-Type', /json/)
+})
+
+test('a valid contact can be added', async () => {
   const newContact = {
     name: 'Carlos Lozano',
     phone: '2477 - 677392'
@@ -55,7 +67,7 @@ test('a valid conctact can be added', async () => {
     .expect('Content-Type', /json/)
 
   const { names } = await getAllFromContacts()
-  expect(names).toContain(newContact.name)
+  expect(names).toContain('Carlos Lozano')
   expect(names).toHaveLength(initialContacts.length + 1)
 })
 

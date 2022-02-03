@@ -1,5 +1,13 @@
 const supertest = require('supertest')
 const app = require('../app')
+
+/**
+ * La prueba importa la aplicación Express del módulo
+ * app.js y la envuelve con la función supertest en un
+ * objeto llamado superagent. Este objeto se asigna a la
+ * variable api y las pruebas pueden usarlo para realizar
+ * solicitudes HTTP al backend
+ */
 const api = supertest(app)
 
 const initialContacts = [
