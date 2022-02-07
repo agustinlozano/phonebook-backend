@@ -6,7 +6,7 @@ contactsRouter.get('/', async (req, res) => {
   res.json(contacts)
 })
 
-contactsRouter.get('/:id', async (req, res, next) => {
+contactsRouter.get('/:id', async (req, res) => {
   const currentID = req.params.id
 
   const contact = await Contact.findById(currentID)
@@ -17,7 +17,7 @@ contactsRouter.get('/:id', async (req, res, next) => {
   }
 })
 
-contactsRouter.delete('/:id', async (req, res, next) => {
+contactsRouter.delete('/:id', async (req, res) => {
   const currentID = req.params.id
 
   const deletedContact = await Contact.findByIdAndRemove(currentID)
@@ -28,7 +28,7 @@ contactsRouter.delete('/:id', async (req, res, next) => {
   }
 })
 
-contactsRouter.post('/', async (req, res, next) => {
+contactsRouter.post('/', async (req, res) => {
   const body = req.body
   const newContac = new Contact({
     name: body.name,
@@ -41,7 +41,7 @@ contactsRouter.post('/', async (req, res, next) => {
 })
 
 /* Para actualizar la informacion de un contacto */
-contactsRouter.put('/:id', async (req, res, next) => {
+contactsRouter.put('/:id', async (req, res) => {
   const currentID = req.params.id
   const currentContact = req.body
 
