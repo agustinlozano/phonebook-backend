@@ -20,8 +20,12 @@ contactsRouter.get('/:id', async (req, res, next) => {
 contactsRouter.delete('/:id', async (req, res, next) => {
   const currentID = req.params.id
 
-  await Contact.findByIdAndRemove(currentID)
-  res.status(204).end()
+  const deletedContact = await Contact.findByIdAndRemove(currentID)
+  if (deletedContact) {
+    res.status(204).end()
+  } else {
+    res.status(404).end()
+  }
 })
 
 contactsRouter.post('/', async (req, res, next) => {

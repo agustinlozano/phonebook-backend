@@ -116,12 +116,24 @@ describe('DELETE /api/persons/:id', () => {
     expect(names).not.toContain(existingContact.name)
   })
 
-  test('a contact that not exist cannot be deleted', async () => {
+  test('fails with status code 400 with a invalid ID', async () => {
     const invalidPATH = '/api/persons/1234'
 
     await api
       .delete(invalidPATH)
       .expect(400)
+
+    const { response } = await getAllFromContacts()
+
+    expect(response.body).toHaveLength(initialContacts.length)
+  })
+
+  test('fails with status code 404 with a nonexisting ID', async () => {
+    const validNonexistingId = '61f85179ff08013914dd882d'
+
+    await api
+      .delete(`/api/blogs/${validNonexistingId}`)
+      .expect(404)
 
     const { response } = await getAllFromContacts()
 
