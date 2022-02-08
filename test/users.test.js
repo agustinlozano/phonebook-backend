@@ -4,20 +4,29 @@ const bcrypt = require('bcrypt')
 const User = require('../models/User')
 const { api, getAllFromUsers } = require('./helpers')
 
-describe('creating a new user', () => {
-  beforeEach(async () => {
-    await User.deleteMany({})
+beforeEach(async () => {
+  await User.deleteMany({})
 
-    const passwordHash = await bcrypt.hash('asd', 10)
-    const userTest = new User({
-      username: 'Ninito',
-      name: 'Gordo Gris',
-      passwordHash
-    })
-
-    await userTest.save()
+  const passwordHash = await bcrypt.hash('asd', 10)
+  const userTest = new User({
+    username: 'Ninito',
+    name: 'Gordo Gris',
+    passwordHash
   })
 
+  await userTest.save()
+})
+
+describe('getting all users', () => {
+  test('users are returned as json', async () => {
+    await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /json/)
+  })
+})
+
+describe('creating a new user', () => {
   test('works as expected creating a fresh username', async () => {
     const { response: fistResponse } = await getAllFromUsers()
     const usertAtStart = fistResponse.body
