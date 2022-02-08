@@ -32,8 +32,16 @@ const getAllFromContacts = async () => {
   return { response, names }
 }
 
+const getAllFromUsers = async () => {
+  const response = await api.get('/api/users')
+  const names = response.body.map(user => user.name)
+  const usernames = response.body.map(user => user.username)
+  return { response, usernames, names }
+}
+
 module.exports = {
   api,
   initialContacts,
-  getAllFromContacts
+  getAllFromContacts,
+  getAllFromUsers
 }
