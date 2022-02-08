@@ -4,6 +4,7 @@ require('express-async-errors')
 const app = express()
 const cors = require('cors')
 const contactsRouter = require('./controllers/contacts')
+const usersRouter = require('./controllers/users')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
@@ -26,6 +27,7 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 
 app.use('/api/persons', contactsRouter)
+app.use('/api/users', usersRouter)
 
 /* Middleware para capturar los endpoints que no son manejados por la app */
 app.use(middleware.notFound)
