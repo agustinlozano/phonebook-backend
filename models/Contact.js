@@ -10,6 +10,10 @@ const contactSchema = new Schema({
     type: String,
     minlength: 8,
     required: true
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   }
 })
 
@@ -27,6 +31,6 @@ contactSchema.set('toJSON', {
 })
 
 /* creamos nuestro modelo llamado Contact segun el esquema que creamos */
-const Contact = model('contact', contactSchema)
+const Contact = model('Contact', contactSchema)
 
 module.exports = Contact
