@@ -1,5 +1,6 @@
 const supertest = require('supertest')
 const app = require('../app')
+const Contact = require('../models/Contact')
 
 /**
  * La prueba importa la aplicación Express del módulo
@@ -10,38 +11,18 @@ const app = require('../app')
  */
 const api = supertest(app)
 
-const initialContacts = [
-  {
-    name: 'Agustin Lozano',
-    phone: '2477 - 635371'
-  },
-  {
-    name: 'Celeste Tessone',
-    phone: '2477 - 397271'
-  },
-  {
-    name: 'Vicente Lozano',
-    phone: '2477 - 639430'
-  }
-]
+const nonExistingId = async () => {
+  const contact = new Contact({
+    name: 'A contact',
+    phone: '2477 - 23234232'
+  })
+  await contact.save()
+  await contact.remove()
 
-const getAllFromContacts = async () => {
-  const response = await api.get('/api/persons')
-  const names = response.body.map(contact => contact.name)
-
-  return { response, names }
-}
-
-const getAllFromUsers = async () => {
-  const response = await api.get('/api/users')
-  const names = response.body.map(user => user.name)
-  const usernames = response.body.map(user => user.username)
-  return { response, usernames, names }
+  return contact.id.toString()
 }
 
 module.exports = {
   api,
-  initialContacts,
-  getAllFromContacts,
-  getAllFromUsers
+  nonExistingId
 }
