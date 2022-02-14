@@ -50,8 +50,12 @@ contactsRouter.put('/:id', async (req, res) => {
     phone: currentContact.phone
   }
 
-  const result = await Contact.findByIdAndUpdate(currentID, newContactInfo, { new: true })
-  res.json(result)
+  const updatedContact = await Contact.findByIdAndUpdate(currentID, newContactInfo, { new: true })
+  if (updatedContact) {
+    res.status(204).end()
+  } else {
+    res.status(404).end()
+  }
 })
 
 module.exports = contactsRouter
