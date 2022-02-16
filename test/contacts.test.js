@@ -4,6 +4,7 @@ const Contact = require('../models/Contact')
 const ContactModel = require('../models/Contact')
 const { api, nonExistingId } = require('./helpers')
 const { initialContacts, getContactResponse } = require('./contact_helper')
+const { getUserResponse } = require('./users_helper')
 
 beforeEach(async () => {
   await ContactModel.deleteMany({})
@@ -33,9 +34,11 @@ describe('GET /api/persons', () => {
 
 describe('POST /api/persons', () => {
   test('a valid contact can be added', async () => {
+    const { ids } = await getUserResponse()
     const newContact = {
       name: 'Carlos Lozano',
-      phone: '2477 - 677392'
+      phone: '2477 - 677392',
+      user: ids[0]
     }
 
     await api
@@ -51,9 +54,11 @@ describe('POST /api/persons', () => {
   })
 
   test('a invalid contact cannot be added', async () => {
+    const { ids } = await getUserResponse()
     const newBadConctact = {
       name: 'bad user',
-      phone: undefined
+      phone: undefined,
+      user: ids[0]
     }
 
     await api
@@ -64,6 +69,19 @@ describe('POST /api/persons', () => {
     const { response: contacts } = await getContactResponse()
 
     expect(contacts).toHaveLength(initialContacts.length)
+  })
+
+  test('fails with status code 404 when userId is missing', async () => {
+    const invalidContact = {
+      name: 'User without id',
+      phone: '2477 - 2434323'
+    }
+
+    await api
+      .post('/api/persons')
+      .send(invalidContact)
+      .expect(404)
+      .expect({ error: 'Cannot read property \'_id\' of null' })
   })
 })
 

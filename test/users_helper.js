@@ -4,8 +4,9 @@ const getUserResponse = async () => {
   const response = await User.find({})
   const names = response.map(user => user.name)
   const usernames = response.map(user => user.username)
+  const ids = response.map(user => user._id)
 
-  return { response, usernames, names }
+  return { response, usernames, names, ids }
 }
 
 const initialUsers = [
