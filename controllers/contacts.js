@@ -1,8 +1,12 @@
 const contactsRouter = require('express').Router()
 const Contact = require('../models/Contact')
+const User = require('../models/User')
 
 contactsRouter.get('/', async (req, res) => {
-  const contacts = await Contact.find({})
+  const contacts = await Contact.find({}).populate('user', {
+    username: 1,
+    name: 1
+  })
   res.json(contacts)
 })
 
@@ -29,14 +33,34 @@ contactsRouter.delete('/:id', async (req, res) => {
 })
 
 contactsRouter.post('/', async (req, res) => {
-  const body = req.body
+  const {
+    name,
+    phone,
+    user: userId
+  } = req.body
+
+  const user = await User.findById(userId)
+
   const newContac = new Contact({
-    name: body.name,
-    phone: body.phone
+    name,
+    phone,
+    user: user._id
   })
 
-  /* Modificar -agrega un nuevo contact- la iformacion en la db */
+  /* Modificar -agrega un nuevo contact- la informacion de contactos en la db */
   const savedContact = await newContac.save()
+
+  user.contacts = user.contacts.concat(savedContact._id)
+
+  const newUserInfo = {
+    username: user.username,
+    name: user.name,
+    contacts: user.contacts
+  }
+
+  /* actualizar la informacion del user en la db */
+  await User.findByIdAndUpdate(userId, newUserInfo, { new: true })
+
   res.json(savedContact)
 })
 
