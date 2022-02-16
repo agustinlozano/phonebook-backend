@@ -19,6 +19,8 @@ const handleErrors = (error, req, res, next) => {
     res.status(400).send({ error: 'id used is malformed' })
   } else if (error.name === 'ValidationError') {
     res.status(400).send({ error: error.message })
+  } else if (error.name === 'TypeError') {
+    res.status(404).send({ error: error.message })
   } else {
     res.status(500).end()
   }
