@@ -23,13 +23,29 @@ describe('getting all users', () => {
 })
 
 describe('creating a new user', () => {
+  test('fails with status code 400 if username is already taken', async () => {
+    const { response: usersAtStart } = await getUserResponse()
+    const userAlreadyTaken = initialUsers[0]
+
+    console.log(userAlreadyTaken)
+
+    await api
+      .post('/api/users')
+      .send(userAlreadyTaken)
+      .expect(400)
+      .expect('Content-Type', /json/)
+
+    const { response: usersAtEnd } = await getUserResponse()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+
   test('works as expected creating a fresh username', async () => {
     const { response: usertAtStart } = await getUserResponse()
 
     const newUser = {
-      username: 'CatitoX',
-      name: 'Cato',
-      password: 'bebeIsMyFriend'
+      username: 'MobBebe',
+      name: 'Bebe',
+      password: 'catoIsAnIdiot'
     }
 
     await api
@@ -41,8 +57,8 @@ describe('creating a new user', () => {
     const { response: userstAtEnd, usernames, names } = await getUserResponse()
 
     expect(userstAtEnd).toHaveLength(usertAtStart.length + 1)
-    expect(usernames).toContain('CatitoX')
-    expect(names).toContain('Cato')
+    expect(usernames).toContain('MobBebe')
+    expect(names).toContain('Bebe')
   })
 })
 
