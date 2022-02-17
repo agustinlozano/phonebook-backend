@@ -1,6 +1,7 @@
 const contactsRouter = require('express').Router()
 const Contact = require('../models/Contact')
 const User = require('../models/User')
+const tokenExtractor = require('../utils/tokenExtractor')
 
 contactsRouter.get('/', async (req, res) => {
   const contacts = await Contact.find({}).populate('user', {
@@ -32,13 +33,13 @@ contactsRouter.delete('/:id', async (req, res) => {
   }
 })
 
-contactsRouter.post('/', async (req, res) => {
+contactsRouter.post('/', tokenExtractor, async (req, res) => {
   const {
     name,
-    phone,
-    user: userId
+    phone
   } = req.body
 
+  const { userId } = req
   const user = await User.findById(userId)
 
   const newContac = new Contact({
