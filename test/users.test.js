@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const server = require('../index')
 const User = require('../models/User')
-const { api } = require('./helpers')
+const { api } = require('./helper')
 const { initialUsers, getUserResponse } = require('./users_helper')
 
 beforeEach(async () => {
