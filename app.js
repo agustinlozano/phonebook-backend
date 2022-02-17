@@ -5,6 +5,7 @@ const app = express()
 const cors = require('cors')
 const contactsRouter = require('./controllers/contacts')
 const usersRouter = require('./controllers/users')
+const loginRouter = require('./controllers/login')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
@@ -28,6 +29,7 @@ app.use(middleware.requestLogger)
 
 app.use('/api/persons', contactsRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
 
 /* Middleware para capturar los endpoints que no son manejados por la app */
 app.use(middleware.notFound)
