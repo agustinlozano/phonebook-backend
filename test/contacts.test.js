@@ -2,9 +2,10 @@ const mongoose = require('mongoose')
 const server = require('../index')
 const Contact = require('../models/Contact')
 const ContactModel = require('../models/Contact')
-const { api, nonExistingId } = require('./helpers')
+const { api, nonExistingId } = require('./helper')
 const { initialContacts, getContactResponse } = require('./contact_helper')
 const { getUserResponse } = require('./users_helper')
+const getAnUserToken = require('./login_helper')
 
 beforeEach(async () => {
   await ContactModel.deleteMany({})
@@ -34,6 +35,7 @@ describe('GET /api/persons', () => {
 
 describe('POST /api/persons', () => {
   test('a valid contact can be added', async () => {
+    const token = await getAnUserToken()
     const { ids } = await getUserResponse()
     const newContact = {
       name: 'Carlos Lozano',
@@ -43,6 +45,7 @@ describe('POST /api/persons', () => {
 
     await api
       .post('/api/persons')
+      .set('Authorization', 'Bearer ' + token)
       .send(newContact)
       .expect(200)
       .expect('Content-Type', /json/)
@@ -54,6 +57,7 @@ describe('POST /api/persons', () => {
   })
 
   test('a invalid contact cannot be added', async () => {
+    const token = await getAnUserToken()
     const { ids } = await getUserResponse()
     const newBadConctact = {
       name: 'bad user',
@@ -63,6 +67,7 @@ describe('POST /api/persons', () => {
 
     await api
       .post('/api/persons')
+      .set('Authorization', 'Bearer ' + token)
       .send(newBadConctact)
       .expect(400)
 
@@ -71,7 +76,8 @@ describe('POST /api/persons', () => {
     expect(contacts).toHaveLength(initialContacts.length)
   })
 
-  test('fails with status code 404 when userId is missing', async () => {
+  test('fails with status code 401 when userId is missing', async () => {
+    const token = undefined
     const invalidContact = {
       name: 'User without id',
       phone: '2477 - 2434323'
@@ -79,28 +85,33 @@ describe('POST /api/persons', () => {
 
     await api
       .post('/api/persons')
+      .set('Authorization', 'Bearer ' + token)
       .send(invalidContact)
-      .expect(404)
-      .expect({ error: 'Cannot read property \'_id\' of null' })
+      .expect(401)
+      .expect({ error: 'jwt malformed' })
   })
 })
 
 describe('GET /api/persons/id', () => {
   test('a single contact can be viewed', async () => {
+    const token = await getAnUserToken()
     const { response: contacts } = await getContactResponse()
     const existingContact = contacts[0]
 
     await api
       .get(`/api/persons/${existingContact.id}`)
+      .set('Authorization', 'Bearer ' + token)
       .expect(200)
       .expect('Content-Type', /json/)
   })
 
   test('a nonexisting id return 404 status code', async () => {
+    const token = await getAnUserToken()
     const validNonexistingId = await nonExistingId()
 
     await api
       .get(`/api/persons/${validNonexistingId}`)
+      .set('Authorization', 'Bearer ' + token)
       .expect(404)
   })
 
@@ -113,11 +124,13 @@ describe('GET /api/persons/id', () => {
 
 describe('DELETE /api/persons/id', () => {
   test('a existing contact can be deleted', async () => {
+    const token = await getAnUserToken()
     const { response: contactsAtStart } = await getContactResponse()
     const existingContact = contactsAtStart[0]
 
     await api
       .delete(`/api/persons/${existingContact.id}`)
+      .set('Authorization', 'Bearer ' + token)
       .expect(204)
 
     const { names, response: contactsAtEnd } = await getContactResponse()
@@ -127,8 +140,11 @@ describe('DELETE /api/persons/id', () => {
   })
 
   test('fails with status code 400 with a invalid ID', async () => {
+    const token = await getAnUserToken()
+
     await api
       .delete('/api/persons/1234')
+      .set('Authorization', 'Bearer ' + token)
       .expect(400)
 
     const { response: contacts } = await getContactResponse()
@@ -137,10 +153,12 @@ describe('DELETE /api/persons/id', () => {
   })
 
   test('fails with status code 404 with a nonexisting ID', async () => {
+    const token = await getAnUserToken()
     const validNonexistingId = await nonExistingId()
 
     await api
       .delete(`/api/persons/${validNonexistingId}`)
+      .set('Authorization', 'Bearer ' + token)
       .expect(404)
 
     const { response: contacts } = await getContactResponse()
@@ -151,6 +169,7 @@ describe('DELETE /api/persons/id', () => {
 
 describe('PUT /api/contact/id', () => {
   test('a contact body can ben updated', async () => {
+    const token = await getAnUserToken()
     const { response: contacts } = await getContactResponse()
     const contact = contacts[0]
 
@@ -161,6 +180,7 @@ describe('PUT /api/contact/id', () => {
 
     await api
       .put(`/api/persons/${contact.id}`)
+      .set('Authorization', 'Bearer ' + token)
       .send(updatedContact)
       .expect(204)
 
@@ -170,16 +190,21 @@ describe('PUT /api/contact/id', () => {
   })
 
   test('fails with status code 404 when a nonexisting id is passed', async () => {
+    const token = await getAnUserToken()
     const id = await nonExistingId()
 
     await api
       .put(`/api/persons/${id}`)
+      .set('Authorization', 'Bearer ' + token)
       .expect(404)
   })
 
   test('fails with status code 400 when an ivalid id is passed', async () => {
+    const token = await getAnUserToken()
+
     await api
       .put('/api/persons/12345')
+      .set('Authorization', 'Bearer ' + token)
       .expect(400)
   })
 })
