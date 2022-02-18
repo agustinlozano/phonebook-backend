@@ -1,14 +1,15 @@
 const mongoose = require('mongoose')
 const server = require('../index')
 const Contact = require('../models/Contact')
+const User = require('../models/User')
 const ContactModel = require('../models/Contact')
 const { api, nonExistingId } = require('./helper')
 const { initialContacts, getContactResponse } = require('./contact_helper')
-const { getUserResponse } = require('./users_helper')
 const getAnUserToken = require('./login_helper')
 
 beforeEach(async () => {
   await ContactModel.deleteMany({})
+  await User.deleteMany({})
 
   /**
    * Para cada contacto del initialContact
@@ -36,11 +37,9 @@ describe('GET /api/persons', () => {
 describe('POST /api/persons', () => {
   test('a valid contact can be added', async () => {
     const token = await getAnUserToken()
-    const { ids } = await getUserResponse()
     const newContact = {
       name: 'Carlos Lozano',
-      phone: '2477 - 677392',
-      user: ids[0]
+      phone: '2477 - 677392'
     }
 
     await api
@@ -58,11 +57,9 @@ describe('POST /api/persons', () => {
 
   test('a invalid contact cannot be added', async () => {
     const token = await getAnUserToken()
-    const { ids } = await getUserResponse()
     const newBadConctact = {
       name: 'bad user',
-      phone: undefined,
-      user: ids[0]
+      phone: undefined
     }
 
     await api
